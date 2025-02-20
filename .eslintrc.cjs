@@ -45,6 +45,12 @@ module.exports = {
           { name: "NavLink", linkAttribute: "to" },
         ],
         "import/resolver": {
+          "node": {
+            "node": {
+              "paths": ["lib"],
+              "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            }
+          },
           typescript: {},
         },
       },

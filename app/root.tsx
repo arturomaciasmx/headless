@@ -1,10 +1,18 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+} from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
 
 import { Navbar } from "./components/layout/navbar";
 import Footer from "./components/layout/footer";
+import { getMenu } from "./lib/shopify";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -19,7 +27,15 @@ export const links: LinksFunction = () => [
   },
 ];
 
+export async function loader() {
+  const menu = await getMenu("main-menu");
+  console.log(menu);
+  return menu;
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const menu = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
@@ -29,7 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Navbar />
+        <Navbar menu={menu} />
         {children}
         <Footer />
         <ScrollRestoration />

@@ -1,15 +1,9 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { json, useActionData } from "@remix-run/react";
+import { Menu } from "~/lib/shopify/types";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  // const menu = await getMenu("main-menu");
-  // if (!menu) {
-  //   return null;
-  // }
-  // return menu;
-  return null;
-}
-export function Navbar() {
-  // const menu = useActionData<typeof loader>;
-  return <>header</>;
+export function Navbar({ menu }: { menu: Menu[] }) {
+  return (
+    <>
+      <h1>test</h1>
+    </>
+  );
 }
