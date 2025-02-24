@@ -4,9 +4,6 @@ import plugin from "tailwindcss";
 export default {
   content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    fontFamily: {
-      sans: ["var(--font-geist-sans)"],
-    },
     keyframes: {
       fadeIn: {
         from: { opacity: "0" },

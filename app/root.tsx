@@ -29,7 +29,6 @@ export const links: LinksFunction = () => [
 
 export async function loader() {
   const menu = await getMenu("main-menu");
-  console.log(menu);
   return menu;
 }
 

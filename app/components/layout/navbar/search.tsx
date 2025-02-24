@@ -1,8 +1,9 @@
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
-import { useSearchParams } from "@remix-run/react";
+import { useNavigate, useSearchParams } from "@remix-run/react";
 
 export default function Search() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -10,10 +11,13 @@ export default function Search() {
     const val = e.target as HTMLFormElement;
     const search = val.search as HTMLInputElement;
     const newParams = new URLSearchParams(searchParams.toString());
-    console.log(search.value);
 
     if (search.value) {
       newParams.set("q", search.value);
+      navigate({
+        pathname: "/search",
+        search: newParams.toString(),
+      });
     } else {
       newParams.delete("q");
     }
