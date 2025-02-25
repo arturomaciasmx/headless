@@ -1,7 +1,7 @@
 import { Link, useLocation, useSearchParams } from "@remix-run/react";
 import { ListItem, type PathFilterItem } from ".";
 import clsx from "clsx";
-import { SortFilterItem } from "~/lib/constants";
+import { type SortFilterItem } from "~/lib/constants";
 import { createUrl } from "~/lib/utils";
 
 function PathFilterItem({ item }: { item: PathFilterItem }) {

@@ -1,6 +1,6 @@
 import { Outlet, useLoaderData } from "@remix-run/react";
 import Collections from "~/components/search/collections";
-import FilterList from "./filter";
+import FilterList from "../../components/search/filter";
 import { sorting } from "~/lib/constants";
 import { getCollections } from "~/lib/shopify";
 

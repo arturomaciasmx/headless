@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { Suspense } from "react";
 import { Collection } from "~/lib/shopify/types";
-import FilterList from "~/routes/search/filter";
+import FilterList from "~/components/search/filter";
 
 function CollectionList({ collections }: { collections: Collection[] }) {
   return <FilterList list={collections} title="Collections" />;
