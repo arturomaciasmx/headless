@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useParams, useSearchParams } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import Grid from "~/components/grid";
 import { ProductGridItems } from "~/components/layout/product-grid-items";
 import { defaultSort, sorting } from "~/lib/constants";
@@ -15,15 +15,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
       sortKey,
       reverse,
     });
-    console.log(products);
-
     return products;
   }
   return [];
 }
 
 export default function SearchCollection() {
-  const products = useLoaderData<typeof loader>();
+  const products = useLoaderData<Product[]>();
   return (
     <section>
       {products?.length == 0 ? (

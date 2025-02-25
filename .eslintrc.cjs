@@ -24,6 +24,18 @@ module.exports = {
   // Base config
   extends: ["eslint:recommended"],
 
+  settings: {
+    "import/resolver": {
+      typescript: {
+        alwaysTryTypes: true, // Helps resolve types correctly
+      },
+      alias: {
+        map: [["~", "./app"]], // Match your tsconfig.json
+        extensions: [".ts", ".tsx", ".js", ".jsx"],
+      },
+    },
+  },
+
   overrides: [
     // React
     {
@@ -43,16 +55,7 @@ module.exports = {
         linkComponents: [
           { name: "Link", linkAttribute: "to" },
           { name: "NavLink", linkAttribute: "to" },
-        ],
-        "import/resolver": {
-          "node": {
-            "node": {
-              "paths": ["lib"],
-              "extensions": [".js", ".jsx", ".ts", ".tsx"]
-            }
-          },
-          typescript: {},
-        },
+        ]
       },
     },
 
