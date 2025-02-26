@@ -12,3 +12,12 @@ export const getProductsQuery = /* GraphQL */ `
   }
   ${productFragment}
 `;
+
+export const getProductQuery = /* GraphQL */ `
+  query getProduct($handle: String) {
+    product(handle: $handle) {
+      ...product
+    }
+  }
+  ${productFragment}
+`;

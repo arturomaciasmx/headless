@@ -12,10 +12,11 @@ import {
   ShopifyCollectionProductsOperation,
   ShopifyMenuOperation,
   ShopifyProduct,
+  ShopifyProductOperation,
   ShopifyProductsOperation,
 } from "./types";
 import { isShopifyError } from "../type-guards";
-import { getProductsQuery } from "./queries/products";
+import { getProductQuery, getProductsQuery } from "./queries/products";
 import { getCollectionProductsQuery, getCollectionsQuery } from "./queries/collection";
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN
@@ -99,6 +100,7 @@ function reshapeProduct(product: ShopifyProduct, filterHiddenProducts: boolean =
   }
 
   const { images, variants, ...rest } = product;
+
   return {
     ...rest,
     images: reshapeImages(images, product.title),
@@ -118,6 +120,7 @@ function reshapeProducts(products: ShopifyProduct[]) {
       }
     }
   }
+
   return reshapedProducts;
 }
 
@@ -240,4 +243,18 @@ export async function getCollectionProducts({
   }
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.collection.products));
+}
+
+export async function getProduct({
+  handle,
+}: {
+  handle: string;
+}): Promise<Product | undefined> {
+  const res = await shopifyFetch<ShopifyProductOperation>({
+    query: getProductQuery,
+    tags: [TAGS.products],
+    variables: { handle },
+  });
+
+  return reshapeProduct(res.body.data.product, false);
 }
