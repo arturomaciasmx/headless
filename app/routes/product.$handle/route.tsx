@@ -1,4 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
+import { Suspense } from "react";
+import ProductDescription from "~/components/product/description";
 import Gallery from "~/components/product/gallery";
 import { getProduct } from "~/lib/shopify";
 import { Image, Product } from "~/lib/shopify/types";
@@ -15,18 +17,24 @@ export default function Product() {
     <div className="mx-auto max-w-screen-2xl px-4">
       <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
         <div className="h-full w-full basis-full lg:basis-4/6">
-          <Gallery
-            images={product?.images.slice(0, 5).map((image: Image) => ({
-              src: image.url,
-              altText: image.altText,
-            }))}
-          />
+          <Suspense
+            fallback={
+              <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden"></div>
+            }
+          >
+            <Gallery
+              images={product?.images.slice(0, 5).map((image: Image) => ({
+                src: image.url,
+                altText: image.altText,
+              }))}
+            />
+          </Suspense>
         </div>
         <div className="basis-4 lg:basis-2/6">
-          <ProductDescription />
+          <ProductDescription product={product} />
         </div>
       </div>
-      <RelatedProducts />
+      {/* <RelatedProducts /> */}
     </div>
   );
 }
