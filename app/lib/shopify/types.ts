@@ -119,7 +119,7 @@ export type ShopifyProduct = {
     minVariantPrice: Money;
   };
   variants: Connection<ProductVariant>;
-  featuredImage: ImageBitmap;
+  featuredImage: Image;
   images: Connection<Image>;
   seo: SEO;
   tags: string[];
@@ -182,6 +182,15 @@ export type ShopifyProductOperation = {
 
 export type Cart = Omit<ShopifyCart, "lines"> & {
   lines: CartItem[];
+};
+
+export type ShopifyCartOperation = {
+  data: {
+    cart: ShopifyCart;
+  };
+  variables: {
+    cartId: string;
+  };
 };
 
 export type ShopifyAddToCartOperation = {

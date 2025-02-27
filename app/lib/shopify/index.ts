@@ -10,6 +10,7 @@ import {
   Product,
   ShopifyAddToCartOperation,
   ShopifyCart,
+  ShopifyCartOperation,
   ShopifyCollection,
   ShopifyCollectionOperation,
   ShopifyCollectionProductsOperation,
@@ -27,6 +28,7 @@ import {
 } from "./queries/products";
 import { getCollectionProductsQuery, getCollectionsQuery } from "./queries/collection";
 import { addToCartMutation } from "./mutations/cart";
+import { getCartQuery } from "./queries/cart";
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN
   ? ensureStartsWith(process.env.SHOPIFY_STORE_DOMAIN, "https://")
@@ -308,4 +310,16 @@ export async function AddToCart(
   });
 
   return reshapeCart(res.body.data.cartLinesAdd.cart);
+}
+
+export async function getCart(cartId: string | undefined): Promise<Cart | undefined> {
+  if (!cartId) return undefined;
+
+  const res = shopifyFetch<ShopifyCartOperation>({
+    query: getCartQuery,
+    tags: [TAGS.products],
+    variables: {
+      cartId: cartId,
+    },
+  });
 }

@@ -6,14 +6,15 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 
 import "./tailwind.css";
 
 import { Navbar } from "./components/layout/navbar";
 import Footer from "./components/layout/footer";
-import { getMenu } from "./lib/shopify";
-import { CartContext } from "./components/cart/cart-context";
+import { getCart, getMenu } from "./lib/shopify";
+import { CartProvider } from "./components/cart/cart-context";
+import { getCartId } from "./lib/cookies.server";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -28,13 +29,17 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
   const menu = await getMenu("main-menu");
-  return menu;
+  const cartId = await getCartId(request);
+  const cart = getCart(cartId);
+  return { menu, cart };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const menu = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<typeof loader>();
+  const menu = loaderData.menu;
+  const cart = loaderData.cart;
 
   return (
     <html lang="en">
@@ -45,11 +50,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <CartContext.Provider value={undefined}>
+        <CartProvider cartPromise={cart}>
           <Navbar menu={menu} />
           {children}
           <Footer menu={menu} />
-        </CartContext.Provider>
+        </CartProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
