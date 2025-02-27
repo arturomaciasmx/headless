@@ -21,3 +21,12 @@ export const getProductQuery = /* GraphQL */ `
   }
   ${productFragment}
 `;
+
+export const getProductRecommendationsQuery = /* GraphQL */ `
+  query productRecommendations($productId: ID!) {
+    productRecommendations(productId: $productId) {
+      ...product
+    }
+  }
+  ${productFragment}
+`;

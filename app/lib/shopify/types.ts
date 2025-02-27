@@ -131,6 +131,15 @@ export type Product = Omit<ShopifyProduct, "variants" | "images"> & {
   images: Image[];
 };
 
+export type ShopifyProductRecommendationsOperation = {
+  data: {
+    productRecommendations: ShopifyProduct[];
+  };
+  variables: {
+    productId: string;
+  };
+};
+
 export type ShopifyCollection = {
   handle: string;
   title: string;
