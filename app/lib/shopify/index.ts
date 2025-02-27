@@ -2,11 +2,14 @@ import { ensureStartsWith } from "../utils";
 import { HIDDEN_PRODUCT_TAG, TAGS } from "../constants";
 import { getMenuQuery } from "./queries/menu";
 import {
+  Cart,
   Collection,
   Connection,
   Image,
   Menu,
   Product,
+  ShopifyAddToCartOperation,
+  ShopifyCart,
   ShopifyCollection,
   ShopifyCollectionOperation,
   ShopifyCollectionProductsOperation,
@@ -18,6 +21,7 @@ import {
 import { isShopifyError } from "../type-guards";
 import { getProductQuery, getProductsQuery } from "./queries/products";
 import { getCollectionProductsQuery, getCollectionsQuery } from "./queries/collection";
+import { addToCartMutation } from "./mutations/cart";
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN
   ? ensureStartsWith(process.env.SHOPIFY_STORE_DOMAIN, "https://")
@@ -257,4 +261,34 @@ export async function getProduct({
   });
 
   return reshapeProduct(res.body.data.product, false);
+}
+
+function reshapeCart(cart: ShopifyCart): Cart {
+  if (!cart.cost?.totalTaxAmount) {
+    cart.cost.totalTaxAmount = {
+      amount: "0.0",
+      currencyCode: "USD",
+    };
+  }
+
+  return {
+    ...cart,
+    lines: removeEdgesAndNodes(cart.lines),
+  };
+}
+
+export async function AddToCart(
+  cartId: string,
+  lines: { merchandiseId: string; quantity: number }[]
+): Promise<Cart> {
+  const res = await shopifyFetch<ShopifyAddToCartOperation>({
+    query: addToCartMutation,
+    variables: {
+      cartId,
+      lines,
+    },
+    cache: "no-cache",
+  });
+
+  return reshapeCart(res.body.data.cartLinesAdd.cart);
 }

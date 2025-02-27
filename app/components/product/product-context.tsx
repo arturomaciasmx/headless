@@ -1,5 +1,5 @@
-import { useNavigate } from "@remix-run/react";
-import { createContext, useContext } from "react";
+import { useNavigate, useSearchParams } from "@remix-run/react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 type ProductState = {
   [key: string]: string;
@@ -14,6 +14,43 @@ type ProductContextType = {
 };
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
+
+export function ProductProvider({ children }: { children: React.ReactNode }) {
+  const [searchParams] = useSearchParams();
+  const getInitialState = () => {
+    const params: ProductState = {};
+
+    for (const [key, value] of searchParams.entries()) {
+      params[key] = value;
+    }
+    return params;
+  };
+
+  const [state, setState] = useState(getInitialState());
+
+  const updateOption = (name: string, value: string) => {
+    const newState = { [name]: value };
+    setState(newState);
+    return { ...state };
+  };
+
+  const updateImage = (index: string) => {
+    const newState = { image: index };
+    setState(newState);
+    return { ...state };
+  };
+
+  const value = useMemo(
+    () => ({
+      state,
+      updateOption,
+      updateImage,
+    }),
+    [state]
+  );
+
+  return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;
+}
 
 export function useProduct() {
   const context = useContext(ProductContext);

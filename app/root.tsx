@@ -13,6 +13,7 @@ import "./tailwind.css";
 import { Navbar } from "./components/layout/navbar";
 import Footer from "./components/layout/footer";
 import { getMenu } from "./lib/shopify";
+import { CartContext } from "./components/cart/cart-context";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -44,9 +45,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Navbar menu={menu} />
-        {children}
-        <Footer menu={menu} />
+        <CartContext.Provider value={undefined}>
+          <Navbar menu={menu} />
+          {children}
+          <Footer menu={menu} />
+        </CartContext.Provider>
         <ScrollRestoration />
         <Scripts />
       </body>

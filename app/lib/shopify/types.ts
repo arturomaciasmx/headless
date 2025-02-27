@@ -28,6 +28,42 @@ export type ShopifyProductsOperation = {
   };
 };
 
+export type CartProduct = {
+  id: string;
+  handle: string;
+  title: string;
+  featuredImage: Image;
+};
+
+export type CartItem = {
+  id: string | undefined;
+  quantity: number;
+  cost: {
+    totalAmount: Money;
+  };
+  merchandise: {
+    id: string;
+    title: string;
+    selectedOptions: {
+      name: string;
+      value: string;
+    }[];
+    product: CartProduct;
+  };
+};
+
+export type ShopifyCart = {
+  id: string | undefined;
+  checkoutUrl: string;
+  cost: {
+    subtotalAmount: Money;
+    totalAmount: Money;
+    totalTaxAmount: Money;
+  };
+  lines: Connection<CartItem>;
+  totalQuantity: number;
+};
+
 export type Edge<T> = {
   node: T;
 };
@@ -132,5 +168,24 @@ export type ShopifyProductOperation = {
   };
   variables: {
     handle: string;
+  };
+};
+
+export type Cart = Omit<ShopifyCart, "lines"> & {
+  lines: CartItem[];
+};
+
+export type ShopifyAddToCartOperation = {
+  data: {
+    cartLinesAdd: {
+      cart: ShopifyCart;
+    };
+  };
+  variables: {
+    cartId: string;
+    lines: {
+      merchandiseId: string;
+      quantity: number;
+    }[];
   };
 };
