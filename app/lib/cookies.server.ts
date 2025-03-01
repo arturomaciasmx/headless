@@ -1,8 +1,10 @@
-// import { createCookie } from "@remix-run/node";
+import { createCookie } from "@remix-run/node";
 
-// export const cartCookie = createCookie("cartId");
-
-// export async function getCartId(request: Request) {
-//   const cookieHeader = request.headers.get("Cookie");
-//   return await cartCookie.parse(cookieHeader);
-// }
+// Define the cart cookie
+export const cartCookie = createCookie("cartId", {
+  path: "/", // Cookie available across the whole site
+  httpOnly: true, // Prevent JavaScript access
+  secure: false, // Secure in production
+  sameSite: "lax", // Prevent CSRF
+  maxAge: 60 * 60 * 24 * 7, // 7 days
+});

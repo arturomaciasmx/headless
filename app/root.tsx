@@ -1,4 +1,5 @@
 import {
+  json,
   Links,
   Meta,
   Outlet,
@@ -14,7 +15,7 @@ import { Navbar } from "./components/layout/navbar";
 import Footer from "./components/layout/footer";
 import { getCart, getMenu } from "./lib/shopify";
 import { CartProvider } from "./components/cart/cart-context";
-// import { getCartId } from "./lib/cookies.server";
+import { cartCookie } from "./lib/cookies.server";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -32,7 +33,11 @@ export const links: LinksFunction = () => [
 export async function loader({ request }: LoaderFunctionArgs) {
   const menu = await getMenu("main-menu");
   // const cartId = await getCartId(request);
-  const cartId = undefined;
+  // console.log(cartId);
+  const cookieHeader = request.headers.get("Cookie");
+  const cartId = (await cartCookie.parse(cookieHeader)) || null;
+  console.log(cartId);
+
   const cart = getCart(cartId);
   return { menu, cart };
 }

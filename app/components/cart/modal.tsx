@@ -3,7 +3,7 @@ import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useCartContext } from "./cart-context";
 import { createUrl } from "~/lib/utils";
-import { Link } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import Price from "../price";
 import OpenCart from "./open-cart";
 import CloseCart from "./close-cart";
@@ -18,6 +18,7 @@ type MerchandiseSearchParams = {
 };
 
 export default function CartModal() {
+  const fetcher = useFetcher();
   const { cart, updateCartItem } = useCartContext();
   const [isOpen, setIsOpen] = useState(false);
   // const quantityRef = useRef(cart?.totalQuantity);
@@ -26,8 +27,10 @@ export default function CartModal() {
 
   useEffect(() => {
     if (!cart) {
-      // createCartAndSetCookie();
+      // crate cart and set cookie if not exists
+      fetcher.submit({ intent: "createCart" }, { action: "/cart", method: "post" });
     }
+    console.log("cart exits");
   }, [cart]);
 
   // useEffect(() => {
