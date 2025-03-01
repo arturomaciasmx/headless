@@ -73,13 +73,14 @@ export function AddToCart({ product }: { product: Product }) {
 
   useEffect(() => {}, [fetcher]);
   const handleAddToCart = () => {
+    // update cart state
     addCartItem(finalVariant, product);
   };
   return (
+    // action to update cart in shopify
     <fetcher.Form method="post" action="/cart" onSubmit={handleAddToCart}>
-      <input type="hidden" name="variant" value={JSON.stringify(finalVariant)} />
-      <input type="hidden" name="product" value={JSON.stringify(product)} />
-      <input type="hidden" name="intent" value="AddToCart" />
+      <input type="hidden" name="selectedVariantId" value={finalVariant.id} />
+      <input type="hidden" name="intent" value="addToCart" />
       <SubmitButton
         availableForSale={availableForSale}
         selectedVariantId={selectedVariantId}

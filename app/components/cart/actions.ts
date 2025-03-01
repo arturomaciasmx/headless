@@ -1,4 +1,5 @@
 // import { getCartId } from "~/lib/cookies.server";
+import { cartCookie } from "~/lib/cookies.server";
 import {
   addToCart,
   AddToCart,
@@ -8,19 +9,23 @@ import {
   updateCart,
 } from "~/lib/shopify";
 
-export async function addItem(
-  request: Request,
-  prevState: any,
-  selectedVariantId: string | undefined
-) {
-  const cartId = await getCartId(request);
+async function getCartId(request: Request) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cartId = (await cartCookie.parse(cookieHeader)) || null;
+  return cartId;
+}
 
+export async function addItem(request: Request, selectedVariantId: string | undefined) {
+  const cartId = await getCartId(request);
   if (!cartId || !selectedVariantId) {
     return "Error adding item to cart";
   }
 
   try {
-    await AddToCart(cartId, [{ merchandiseId: selectedVariantId, quantity: 1 }]);
+    const cart = await addToCart(cartId, [
+      { merchandiseId: selectedVariantId, quantity: 1 },
+    ]);
+    console.log("🚀 ~ actions.ts:29 ~ addItem ~ cart:", cart);
   } catch (error) {
     return "Error adding item to cart";
   }
