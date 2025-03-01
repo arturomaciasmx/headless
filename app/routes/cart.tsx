@@ -18,12 +18,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // }
   const formData = await request.formData();
   const intent = formData.get("intent");
+
   switch (intent) {
     case "createCart": {
       let cart = await createCart();
       const headers = new Headers();
       headers.append("Set-Cookie", await cartCookie.serialize(cart.id));
       return json({ success: true, cartId: cart.id }, { headers });
+    }
+    case "AddToCart": {
+      const variant = formData.get("variant") as string;
+      const product = formData.get("product") as string;
+      console.log(JSON.parse(variant));
+      // addCartItem(variant, product);
+      console.log("AddToCart");
+      return json({ message: "Add to cart message", ok: true });
     }
   }
   return null;

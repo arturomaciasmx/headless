@@ -32,13 +32,10 @@ export const links: LinksFunction = () => [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const menu = await getMenu("main-menu");
-  // const cartId = await getCartId(request);
-  // console.log(cartId);
   const cookieHeader = request.headers.get("Cookie");
   const cartId = (await cartCookie.parse(cookieHeader)) || null;
-  console.log(cartId);
-
   const cart = getCart(cartId);
+
   return { menu, cart };
 }
 

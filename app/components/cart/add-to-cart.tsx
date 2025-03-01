@@ -4,6 +4,7 @@ import { useCartContext } from "./cart-context";
 import clsx from "clsx";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useFetcher } from "@remix-run/react";
+import { useEffect } from "react";
 
 function SubmitButton({
   availableForSale,
@@ -57,8 +58,8 @@ function SubmitButton({
 export function AddToCart({ product }: { product: Product }) {
   const { variants, availableForSale } = product;
   const { state } = useProduct();
-
   const fetcher = useFetcher();
+  const { addCartItem } = useCartContext();
 
   const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(
@@ -70,10 +71,15 @@ export function AddToCart({ product }: { product: Product }) {
   const selectedVariantId = variant?.id || defaultVariantId;
   const finalVariant = variants.find((variant) => variant.id === selectedVariantId)!;
 
+  useEffect(() => {}, [fetcher]);
+  const handleAddToCart = () => {
+    addCartItem(finalVariant, product);
+  };
   return (
-    <fetcher.Form method="post" action="/cart">
-      <input type="hidden" name="variantId" value={JSON.stringify(finalVariant)} />
+    <fetcher.Form method="post" action="/cart" onSubmit={handleAddToCart}>
+      <input type="hidden" name="variant" value={JSON.stringify(finalVariant)} />
       <input type="hidden" name="product" value={JSON.stringify(product)} />
+      <input type="hidden" name="intent" value="AddToCart" />
       <SubmitButton
         availableForSale={availableForSale}
         selectedVariantId={selectedVariantId}
