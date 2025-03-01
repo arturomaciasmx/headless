@@ -2,6 +2,7 @@ import { Link } from "@remix-run/react";
 import { Menu } from "~/lib/shopify/types";
 import MobileMenu from "./mobile";
 import Search from "./search";
+import CartModal from "~/components/cart/modal";
 
 export function Navbar({ menu }: { menu: Menu[] }) {
   return (
@@ -38,7 +39,9 @@ export function Navbar({ menu }: { menu: Menu[] }) {
         <div className="hidden justify-center md:flex md:w-1/3">
           <Search />
         </div>
-        <div className="flex justify-end md:w-1/3">{/* <CartModal /> */}</div>
+        <div className="flex justify-end md:w-1/3">
+          <CartModal />
+        </div>
       </div>
     </nav>
   );

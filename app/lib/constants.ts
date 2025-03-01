@@ -27,3 +27,5 @@ export const sorting: SortFilterItem[] = [
   { title: "Price: Low to High", slug: "price-asc", sortKey: "PRICE", reverse: false }, // asc
   { title: "Price: High to Low", slug: "price-desc", sortKey: "PRICE", reverse: false },
 ];
+
+export const DEFAULT_OPTION = "Default Title";

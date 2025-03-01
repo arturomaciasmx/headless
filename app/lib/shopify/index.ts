@@ -14,11 +14,14 @@ import {
   ShopifyCollection,
   ShopifyCollectionOperation,
   ShopifyCollectionProductsOperation,
+  ShopifyCreateCartOperation,
   ShopifyMenuOperation,
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductRecommendationsOperation,
   ShopifyProductsOperation,
+  ShopifyRemoveFromCartOperation,
+  ShopifyUpdateCartOperation,
 } from "./types";
 import { isShopifyError } from "../type-guards";
 import {
@@ -27,7 +30,12 @@ import {
   getProductsQuery,
 } from "./queries/products";
 import { getCollectionProductsQuery, getCollectionsQuery } from "./queries/collection";
-import { addToCartMutation } from "./mutations/cart";
+import {
+  addToCartMutation,
+  createCartMutation,
+  editCartItemsMutation,
+  removeFromCartMutation,
+} from "./mutations/cart";
 import { getCartQuery } from "./queries/cart";
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN
@@ -296,7 +304,16 @@ function reshapeCart(cart: ShopifyCart): Cart {
   };
 }
 
-export async function AddToCart(
+export async function createCart() {
+  const res = await shopifyFetch<ShopifyCreateCartOperation>({
+    query: createCartMutation,
+    cache: "no-store",
+  });
+
+  return reshapeCart(res.body.data.cartCreate.cart);
+}
+
+export async function addToCart(
   cartId: string,
   lines: { merchandiseId: string; quantity: number }[]
 ): Promise<Cart> {
@@ -312,14 +329,57 @@ export async function AddToCart(
   return reshapeCart(res.body.data.cartLinesAdd.cart);
 }
 
+export async function updateCart(
+  cartId: string,
+  lines: { id: string; merchandiseId: string; quantity: number }[]
+): Promise<Cart> {
+  const res = await shopifyFetch<ShopifyUpdateCartOperation>({
+    query: editCartItemsMutation,
+    variables: {
+      cartId,
+      lines,
+    },
+    cache: "no-store",
+  });
+
+  return reshapeCart(res.body.data.cartLinesUpdate.cart);
+}
+
+export async function removeFromCart(cartId: string, lineIds: string[]): Promise<Cart> {
+  const res = await shopifyFetch<ShopifyRemoveFromCartOperation>({
+    query: removeFromCartMutation,
+    variables: {
+      cartId,
+      lineIds,
+    },
+    cache: "no-store",
+  });
+
+  return reshapeCart(res.body.data.cartLinesRemove.cart);
+}
+
+export async function updateItemQuantity(
+  prevState: any,
+  payload: { merchandiseId: string; quantity: number }
+) {
+  let cartId = cookies.get("cart")?.value;
+}
+
 export async function getCart(cartId: string | undefined): Promise<Cart | undefined> {
   if (!cartId) return undefined;
 
-  const res = shopifyFetch<ShopifyCartOperation>({
+  const res = await shopifyFetch<ShopifyCartOperation>({
     query: getCartQuery,
     tags: [TAGS.products],
     variables: {
       cartId: cartId,
     },
   });
+
+  // old cart becomes null when you checout
+  if (!res.body.data.cart) {
+    return undefined;
+  }
+
+  return reshapeCart(res.body.data.cart);
 }
