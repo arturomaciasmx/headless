@@ -1,6 +1,6 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CartItem } from "~/lib/shopify/types";
-import { removeItem } from "./actions.server";
+import { removeItem } from "./actions";
 
 export function DeleteItemButton({
   item,

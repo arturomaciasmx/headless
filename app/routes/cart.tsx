@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import { addItem } from "~/components/cart/actions.server";
+import { addItem } from "~/components/cart/actions";
 import { useCartContext } from "~/components/cart/cart-context";
 import { Product } from "~/lib/shopify/types";
 

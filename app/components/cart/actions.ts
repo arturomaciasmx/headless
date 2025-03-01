@@ -1,4 +1,4 @@
-import { getCartId } from "~/lib/cookies.server";
+// import { getCartId } from "~/lib/cookies.server";
 import {
   addToCart,
   AddToCart,
