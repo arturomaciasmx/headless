@@ -1,6 +1,12 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { cartCookie } from "~/lib/cookies.server";
-import { addToCart, createCart, getCart, removeFromCart } from "~/lib/shopify";
+import {
+  addToCart,
+  createCart,
+  getCart,
+  removeFromCart,
+  updateCart,
+} from "~/lib/shopify";
 
 async function getCartId(request: Request) {
   const cookieHeader = request.headers.get("Cookie");
@@ -57,6 +63,39 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       } catch (error) {
         console.log("🚀 ~ cart.tsx:58 ~ action ~ error:", error);
         return json({ message: "Error removing item", ok: false });
+      }
+    }
+    case "updateItemQuantity": {
+      const cartId = await getCartId(request);
+
+      if (!cartId) {
+        return json({ message: "Missing cart ID", ok: false });
+      }
+
+      const merchandiseId = formData.get("merchandiseId") as string;
+      const quantity = Number(formData.get("quantity"));
+
+      try {
+        const cart = await getCart(cartId);
+        if (!cart) {
+          return json({ message: "Error fetching cart", ok: false });
+        }
+
+        const lineItem = cart?.lines.find(
+          (line) => line.merchandise.id === merchandiseId
+        );
+
+        if (lineItem && lineItem?.id) {
+          if (quantity === 0) {
+            await removeFromCart(cartId, [lineItem?.id]);
+          } else {
+            await updateCart(cartId, [{ id: lineItem.id, merchandiseId, quantity }]);
+          }
+        } else if (quantity > 0) {
+          await addToCart(cartId, [{ merchandiseId, quantity }]);
+        }
+      } catch (error) {
+        return json({ message: { error }, ok: false });
       }
     }
   }

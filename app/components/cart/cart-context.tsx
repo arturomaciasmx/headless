@@ -5,12 +5,9 @@ type UpdateType = "plus" | "minus" | "delete";
 
 type CartContextType = {
   cart: Cart | undefined;
-  updateCartItem: (mechandiseId: string, updateType: UpdateType) => void;
+  updateCartItem: (merchandiseId: string, updateType: UpdateType) => void;
   addCartItem: (variant: ProductVariant, product: Product) => void;
 };
-
-export const CartContext = createContext<CartContextType | undefined>(undefined);
-
 type CartAction =
   | {
       type: "UPDATE_ITEM";
@@ -20,6 +17,8 @@ type CartAction =
       type: "ADD_ITEM";
       payload: { variant: ProductVariant; product: Product };
     };
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
 function createEmptyCart(): Cart {
   return {
@@ -35,7 +34,7 @@ function createEmptyCart(): Cart {
   };
 }
 
-function calculateItemcost(quantity: number, price: string): string {
+function calculateItemCost(quantity: number, price: string): string {
   return (Number(price) * quantity).toString();
 }
 
@@ -46,8 +45,8 @@ function updateCartItem(item: CartItem, updateType: UpdateType): CartItem | null
 
   if (newQuantity === 0) return null;
 
-  const singleItemAmount = Number(item.cost.totalAmount) / item.quantity;
-  const newTotalAmount = calculateItemcost(newQuantity, singleItemAmount.toString());
+  const singleItemAmount = Number(item.cost.totalAmount.amount) / item.quantity;
+  const newTotalAmount = calculateItemCost(newQuantity, singleItemAmount.toString());
 
   return {
     ...item,
@@ -87,7 +86,7 @@ function createOrUpdateCartItem(
   product: Product
 ): CartItem {
   const quantity = existingItem ? existingItem.quantity + 1 : 1;
-  const totalAmount = calculateItemcost(quantity, variant.price.amount);
+  const totalAmount = calculateItemCost(quantity, variant.price.amount);
 
   return {
     id: existingItem?.id,
@@ -114,6 +113,7 @@ function createOrUpdateCartItem(
 
 function cartReducer(state: Cart | undefined, action: CartAction): Cart {
   const currentCart = state || createEmptyCart();
+
   switch (action.type) {
     case "UPDATE_ITEM": {
       const { merchandiseId, updateType } = action.payload;
@@ -130,21 +130,22 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
           totalQuantity: 0,
           cost: {
             ...currentCart.cost,
-            totalAmount: {
-              ...currentCart.cost.totalAmount,
-              amount: "0",
-            },
+            totalAmount: { ...currentCart.cost.totalAmount, amount: "0" },
           },
         };
       }
-      return { ...currentCart, ...updateCartTotals(updatedLines), lines: updatedLines };
+
+      return {
+        ...currentCart,
+        ...updateCartTotals(updatedLines),
+        lines: updatedLines,
+      };
     }
     case "ADD_ITEM": {
       const { variant, product } = action.payload;
       const existingItem = currentCart.lines.find(
         (item) => item.merchandise.id === variant.id
       );
-
       const updatedItem = createOrUpdateCartItem(existingItem, variant, product);
 
       const updatedLines = existingItem
@@ -153,7 +154,11 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
           )
         : [...currentCart.lines, updatedItem];
 
-      return { ...currentCart, ...updateCartTotals(updatedLines), lines: updatedLines };
+      return {
+        ...currentCart,
+        ...updateCartTotals(updatedLines),
+        lines: updatedLines,
+      };
     }
     default:
       return currentCart;
@@ -172,7 +177,10 @@ export function CartProvider({
 
   const updateCartItem = (merchandiseId: string, updateType: UpdateType) => {
     setCart(
-      cartReducer(cart, { type: "UPDATE_ITEM", payload: { merchandiseId, updateType } })
+      cartReducer(cart, {
+        type: "UPDATE_ITEM",
+        payload: { merchandiseId, updateType },
+      })
     );
   };
 
@@ -186,7 +194,6 @@ export function CartProvider({
       updateCartItem,
       addCartItem,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [cart]
   );
 
@@ -195,8 +202,9 @@ export function CartProvider({
 
 export function useCartContext() {
   const context = useContext(CartContext);
+
   if (context === undefined) {
-    throw new Error("useCart must be used within a cartProvider");
+    throw new Error("useCart must be used within a CartProvider");
   }
 
   return context;

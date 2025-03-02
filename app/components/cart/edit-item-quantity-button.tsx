@@ -1,6 +1,8 @@
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { CartItem } from "~/lib/shopify/types";
+import { useCartContext } from "./cart-context";
 
 function SubmitButton({ type }: { type: "plus" | "minus" }) {
   return (
@@ -26,29 +28,32 @@ function SubmitButton({ type }: { type: "plus" | "minus" }) {
 export function EditItemQuantityButton({
   item,
   type,
-  optimisticUpdate,
 }: {
   item: CartItem;
   type: "plus" | "minus";
-  optimisticUpdate: any;
 }) {
-  const [message, formAction] = useFormState(updateItemQuantity, null);
-  const payload = {
-    merchandiseId: item.merchandise.id,
-    quantity: type === "plus" ? item.quantity + 1 : item.quantity - 1,
+  // const [message, formAction] = useFormState(updateItemQuantity, null);
+  // const payload = {
+  //   merchandiseId: item.merchandise.id,
+  //   quantity: type === "plus" ? item.quantity + 1 : item.quantity - 1,
+  // };
+  // const actionWithVariant = formAction.bind(null, payload);
+  const fetcher = useFetcher();
+  const { updateCartItem } = useCartContext();
+  const merchandiseId = item.merchandise.id;
+  const quantity = type === "plus" ? item.quantity + 1 : item.quantity - 1;
+  const handleUpdateQuantity = () => {
+    updateCartItem(merchandiseId, type);
   };
-  const actionWithVariant = formAction.bind(null, payload);
   return (
-    <form
-      action={async () => {
-        optimisticUpdate(payload.merchandiseId, type);
-        await actionWithVariant();
-      }}
-    >
+    <fetcher.Form action="/cart" method="POST" onSubmit={handleUpdateQuantity}>
+      <input type="hidden" name="intent" value="updateItemQuantity" />
+      <input type="hidden" name="merchandiseId" value={merchandiseId} />
+      <input type="hidden" name="quantity" value={quantity} />
       <SubmitButton type={type} />
       <p aria-label="polite" className="sr-only" role="status">
-        {message}
+        {/* // {message} */}
       </p>
-    </form>
+    </fetcher.Form>
   );
 }
