@@ -4,7 +4,6 @@ import { useCartContext } from "./cart-context";
 import clsx from "clsx";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useFetcher } from "@remix-run/react";
-import { useEffect } from "react";
 
 function SubmitButton({
   availableForSale,
@@ -71,7 +70,6 @@ export function AddToCart({ product }: { product: Product }) {
   const selectedVariantId = variant?.id || defaultVariantId;
   const finalVariant = variants.find((variant) => variant.id === selectedVariantId)!;
 
-  useEffect(() => {}, [fetcher]);
   const handleAddToCart = () => {
     // update cart state
     addCartItem(finalVariant, product);

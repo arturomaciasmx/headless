@@ -1,25 +1,23 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CartItem } from "~/lib/shopify/types";
-import { removeItem } from "./actions";
+import { useFetcher } from "@remix-run/react";
+import { useCartContext } from "./cart-context";
 
-export function DeleteItemButton({
-  item,
-  optimisticUpdate,
-}: {
-  item: CartItem;
-  optimisticUpdate: any;
-}) {
-  const [message, formAction] = useFormState(removeItem, null);
+export function DeleteItemButton({ item }: { item: CartItem }) {
+  const fetcher = useFetcher();
+  const { updateCartItem } = useCartContext();
+  // const [message, formAction] = useFormState(removeItem, null);
   const merchandiseId = item.merchandise.id;
-  const actionWithVariant = formAction.bind(null, merchandiseId);
+  // const actionWithVariant = formAction.bind(null, merchandiseId);
+
+  const handleRemoveItem = () => {
+    updateCartItem(merchandiseId, "delete");
+  };
 
   return (
-    <form
-      action={async () => {
-        optimisticUpdate(merchandiseId, "delete");
-        await actionWithVariant();
-      }}
-    >
+    <fetcher.Form method="post" action="/cart" onSubmit={handleRemoveItem}>
+      <input type="hidden" name="intent" value="removeItem" />
+      <input type="hidden" name="merchandiseId" value={merchandiseId} />
       <button
         type="submit"
         aria-label="Remove cart item"
@@ -28,8 +26,8 @@ export function DeleteItemButton({
         <XMarkIcon className="mx-[1px] h-4 w-4 text-white dark:text-black" />
       </button>
       <p aria-live="polite" className="sr-only" role="status">
-        {message}
+        {/* {message} */}
       </p>
-    </form>
+    </fetcher.Form>
   );
 }

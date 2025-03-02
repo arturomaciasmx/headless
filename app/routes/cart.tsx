@@ -1,8 +1,6 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import { useCartContext } from "~/components/cart/cart-context";
 import { cartCookie } from "~/lib/cookies.server";
-import { addToCart, createCart } from "~/lib/shopify";
-import { Product } from "~/lib/shopify/types";
+import { addToCart, createCart, getCart, removeFromCart } from "~/lib/shopify";
 
 async function getCartId(request: Request) {
   const cookieHeader = request.headers.get("Cookie");
@@ -11,16 +9,6 @@ async function getCartId(request: Request) {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  // const { cart, addCartItem } = useCartContext();
-  // const formData = await request.formData();
-  // const product = formData.get("product");
-  // addCartItem();
-  // try {
-  //   await addItem(request, cart);
-  //   return json({ message: "Item added successfully!" });
-  // } catch (error) {
-  //   return json({ message: "Failed to add item" }, { status: 500 });
-  // }
   const formData = await request.formData();
   const intent = formData.get("intent");
 
@@ -33,24 +21,43 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
     case "addToCart": {
       const selectedVariantId = formData.get("selectedVariantId") as string;
-      console.log("🚀 ~ cart.tsx:36 ~ action ~ selectedVariantId:", selectedVariantId);
       const cartId = await getCartId(request);
-      console.log("🚀 ~ cart.tsx:38 ~ action ~ cartId:", cartId);
 
       if (!cartId || !selectedVariantId) {
         return "Error adding item to cart";
       }
 
       try {
-        const cart = await addToCart(cartId, [
-          { merchandiseId: selectedVariantId, quantity: 1 },
-        ]);
-        console.log("🚀 ~ cart.tsx:45 ~ action ~ cart:", cart);
+        await addToCart(cartId, [{ merchandiseId: selectedVariantId, quantity: 1 }]);
+        return json({ message: "Item added successfully", ok: true });
       } catch (error) {
-        console.log("🚀 ~ action ~ error:", error);
+        return json({ message: "Error adding item to cart", ok: false });
+      }
+    }
+    case "removeItem": {
+      const cartId = await getCartId(request);
+      const merchandiseId = formData.get("merchandiseId") as string;
+
+      if (!cartId) {
+        return "Missing cart ID";
       }
 
-      return json({ message: "Add to cart message", ok: true });
+      try {
+        const cart = await getCart(cartId);
+        const lineItem = cart?.lines.find(
+          (line) => line.merchandise.id === merchandiseId
+        );
+
+        if (lineItem && lineItem.id) {
+          await removeFromCart(cartId, [lineItem.id]);
+          return json({ message: "Success: Iteme deleted from cart", ok: true });
+        } else {
+          return json({ message: "Error: Item not found in cart", ok: false });
+        }
+      } catch (error) {
+        console.log("🚀 ~ cart.tsx:58 ~ action ~ error:", error);
+        return json({ message: "Error removing item", ok: false });
+      }
     }
   }
   return null;

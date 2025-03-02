@@ -115,10 +115,10 @@ export default function CartModal() {
                             className="lex w-full flex-col border-b border-neutral-300 dark:border-neutral-700"
                           >
                             <div className="relative flex w-full flex-row justify-between px-1 py-4">
-                              {/* <DeleteItemButton
+                              <DeleteItemButton
                                 item={item}
-                                optimisticUpdate={updateCartItem}
-                              /> */}
+                                // optimisticUpdate={updateCartItem}
+                              />
                             </div>
                             <div className="flex flex-row">
                               <div className="relative h-16 w-16 overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
