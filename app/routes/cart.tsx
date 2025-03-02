@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json } from "@remix-run/node";
+import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { cartCookie } from "~/lib/cookies.server";
 import {
   addToCart,
@@ -94,9 +94,26 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         } else if (quantity > 0) {
           await addToCart(cartId, [{ merchandiseId, quantity }]);
         }
+        return json({ message: "Success: quantity updated", ok: false });
       } catch (error) {
         return json({ message: { error }, ok: false });
       }
+    }
+    case "redirectToCheckout": {
+      const cartId = await getCartId(request);
+
+      if (!cartId) {
+        return json({ message: "Missing cart id", ok: false });
+      }
+
+      const cart = await getCart(cartId);
+
+      if (!cart) {
+        return json({ message: "Error fetching cart", ok: false });
+      }
+      console.log(cart.checkoutUrl);
+
+      return redirect(cart.checkoutUrl);
     }
   }
   return null;

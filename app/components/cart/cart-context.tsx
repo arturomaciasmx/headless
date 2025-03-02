@@ -194,6 +194,7 @@ export function CartProvider({
       updateCartItem,
       addCartItem,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [cart]
   );
 

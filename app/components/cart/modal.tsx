@@ -10,8 +10,7 @@ import CloseCart from "./close-cart";
 import { DEFAULT_OPTION } from "~/lib/constants";
 import { DeleteItemButton } from "./delete-item-button";
 import { EditItemQuantityButton } from "./edit-item-quantity-button";
-// import LoadingDots from "../loading";
-// import { createCartAndSetCookie, redirectToCheckout } from "./actions.server";
+import LoadingDots from "../loading";
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -19,7 +18,7 @@ type MerchandiseSearchParams = {
 
 export default function CartModal() {
   const fetcher = useFetcher();
-  const { cart, updateCartItem } = useCartContext();
+  const { cart } = useCartContext();
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(cart?.totalQuantity);
   const openCart = () => setIsOpen(true);
@@ -30,6 +29,7 @@ export default function CartModal() {
       // crate cart and set cookie if not exists
       fetcher.submit({ intent: "createCart" }, { action: "/cart", method: "post" });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
 
   useEffect(() => {
@@ -190,9 +190,10 @@ export default function CartModal() {
                       />
                     </div>
                   </div>
-                  {/* <form action={redirectToCheckout}>
+                  <fetcher.Form action="/cart" method="POST">
+                    <input type="hidden" name="intent" value="redirectToCheckout" />
                     <CheckoutButton />
-                  </form> */}
+                  </fetcher.Form>
                 </div>
               )}
             </Dialog.Panel>
@@ -203,16 +204,17 @@ export default function CartModal() {
   );
 }
 
-// function CheckoutButton() {
-//   const { pending } = useFormStatus();
+function CheckoutButton() {
+  const fetcher = useFetcher();
+  const status = fetcher.state;
 
-//   return (
-//     <button
-//       className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
-//       type="submit"
-//       disabled={pending}
-//     >
-//       {pending ? <LoadingDots className="bg-white" /> : "Proceed to Checkout"}
-//     </button>
-//   );
-// }
+  return (
+    <button
+      className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
+      type="submit"
+      disabled={status !== "idle"}
+    >
+      {status !== "idle" ? <LoadingDots className="bg-white" /> : "Proceed to Checkout"}
+    </button>
+  );
+}
