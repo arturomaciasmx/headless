@@ -60,11 +60,11 @@ export function AddToCart({ product }: { product: Product }) {
   const fetcher = useFetcher();
   const { addCartItem } = useCartContext();
 
-  const variant = variants.find((variant: ProductVariant) =>
-    variant.selectedOptions.every(
+  const variant = variants.find((variant: ProductVariant) => {
+    return variant.selectedOptions.every(
       (option) => option.value === state[option.name.toLowerCase()]
-    )
-  );
+    );
+  });
 
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
   const selectedVariantId = variant?.id || defaultVariantId;
@@ -77,7 +77,7 @@ export function AddToCart({ product }: { product: Product }) {
   return (
     // action to update cart in shopify
     <fetcher.Form method="post" action="/cart" onSubmit={handleAddToCart}>
-      <input type="hidden" name="selectedVariantId" value={finalVariant.id} />
+      <input type="hidden" name="selectedVariantId" value={finalVariant?.id} />
       <input type="hidden" name="intent" value="addToCart" />
       <SubmitButton
         availableForSale={availableForSale}

@@ -1,6 +1,7 @@
 import { ProductOption, ProductVariant } from "~/lib/shopify/types";
 import { useProduct, useUpdateURL } from "./product-context";
 import clsx from "clsx";
+import { useFetcher } from "@remix-run/react";
 
 type Combination = {
   id: string;
@@ -17,8 +18,11 @@ export default function VariantSelector({
 }) {
   const { state, updateOption } = useProduct();
   const updateURL = useUpdateURL();
+  const fetcher = useFetcher();
   const hasNoOptionsOrJustOneOption =
     !options.length || (options.length === 1 && options[0]?.values.length === 1);
+
+  if (hasNoOptionsOrJustOneOption) return null;
 
   const combinations: Combination[] = variants.map((variant) => ({
     id: variant.id,
@@ -33,7 +37,7 @@ export default function VariantSelector({
   }));
 
   return options.map((option) => (
-    <form key={option.id}>
+    <fetcher.Form key={option.id} action="/cart">
       <dl className="mb-3">
         <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
         <dd className="flex flex-wrap gap-3">
@@ -76,6 +80,15 @@ export default function VariantSelector({
                       !isAvailableForSale,
                   }
                 )}
+                onClick={() => {
+                  const newState = updateOption(optionNameLowerCase, value);
+                  console.log(
+                    "🚀 ~ variant-selector.tsx:83 ~ {option.values.map ~ newState:",
+                    newState
+                  );
+
+                  updateURL(newState);
+                }}
               >
                 {value}
               </button>
@@ -83,6 +96,6 @@ export default function VariantSelector({
           })}
         </dd>
       </dl>
-    </form>
+    </fetcher.Form>
   ));
 }
