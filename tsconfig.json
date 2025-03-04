@@ -12,7 +12,6 @@
       "ES2022"
     ],
     "types": [
-      "node",
       "vite/client"
     ],
     "target": "ES2022",
