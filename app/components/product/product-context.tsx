@@ -1,6 +1,5 @@
 import { useSearchParams } from "@remix-run/react";
 import { createContext, useContext, useMemo, useState } from "react";
-import { redirect } from "react-router";
 
 type ProductState = {
   [key: string]: string;
@@ -62,6 +61,7 @@ export function useProduct() {
 }
 
 export function useUpdateURL() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setSearchParams] = useSearchParams();
   return (state: ProductState) => {
     const newParams = new URLSearchParams(window.location.search);

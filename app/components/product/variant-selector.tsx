@@ -37,7 +37,13 @@ export default function VariantSelector({
   }));
 
   return options.map((option) => (
-    <fetcher.Form key={option.id} action="/cart">
+    <fetcher.Form
+      key={option.id}
+      action="/cart"
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
       <dl className="mb-3">
         <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
         <dd className="flex flex-wrap gap-3">
@@ -82,11 +88,6 @@ export default function VariantSelector({
                 )}
                 onClick={() => {
                   const newState = updateOption(optionNameLowerCase, value);
-                  console.log(
-                    "🚀 ~ variant-selector.tsx:83 ~ {option.values.map ~ newState:",
-                    newState
-                  );
-
                   updateURL(newState);
                 }}
               >
