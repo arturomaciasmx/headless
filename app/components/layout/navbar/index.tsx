@@ -1,5 +1,5 @@
-import { Link } from "@remix-run/react";
-import { Menu } from "~/lib/shopify/types";
+import { Link } from "react-router";
+import type { Menu } from "~/lib/shopify/types";
 import MobileMenu from "./mobile";
 import Search from "./search";
 import CartModal from "~/components/cart/modal";

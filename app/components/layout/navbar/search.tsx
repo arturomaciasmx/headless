@@ -1,5 +1,5 @@
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
-import { useNavigate, useSearchParams } from "@remix-run/react";
+import { useNavigate, useSearchParams } from "react-router";
 
 export default function Search() {
   const [searchParams] = useSearchParams();

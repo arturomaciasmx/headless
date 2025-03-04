@@ -1,5 +1,5 @@
-import { useLocation, useSearchParams } from "@remix-run/react";
-import { ListItem } from ".";
+import { useLocation, useSearchParams } from "react-router";
+import { type ListItem } from ".";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { FilterItem } from "./item";

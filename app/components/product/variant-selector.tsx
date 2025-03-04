@@ -1,7 +1,7 @@
-import { ProductOption, ProductVariant } from "~/lib/shopify/types";
+import type { ProductOption, ProductVariant } from "~/lib/shopify/types";
 import { useProduct, useUpdateURL } from "./product-context";
 import clsx from "clsx";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher } from "react-router";
 
 type Combination = {
   id: string;

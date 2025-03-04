@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "react-router";
 import Collections from "~/components/search/collections";
 import FilterList from "../../components/search/filter";
 import { sorting } from "~/lib/constants";

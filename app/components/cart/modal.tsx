@@ -3,7 +3,7 @@ import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useCartContext } from "./cart-context";
 import { createUrl } from "~/lib/utils";
-import { Link, useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from "react-router";
 import Price from "../price";
 import OpenCart from "./open-cart";
 import CloseCart from "./close-cart";

@@ -1,9 +1,9 @@
-import { Product, ProductVariant } from "~/lib/shopify/types";
+import type { Product, ProductVariant } from "~/lib/shopify/types";
 import { useProduct } from "../product/product-context";
 import { useCartContext } from "./cart-context";
 import clsx from "clsx";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher } from "react-router";
 
 function SubmitButton({
   availableForSale,

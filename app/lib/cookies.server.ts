@@ -1,4 +1,4 @@
-import { createCookie } from "@remix-run/node";
+import { createCookie } from "react-router";
 
 // Define the cart cookie
 export const cartCookie = createCookie("cartId", {

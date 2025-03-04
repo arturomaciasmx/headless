@@ -1,7 +1,7 @@
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher } from "react-router";
 import clsx from "clsx";
-import { CartItem } from "~/lib/shopify/types";
+import type { CartItem } from "~/lib/shopify/types";
 import { useCartContext } from "./cart-context";
 
 function SubmitButton({ type }: { type: "plus" | "minus" }) {

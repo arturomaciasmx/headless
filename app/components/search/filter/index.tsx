@@ -1,4 +1,4 @@
-import { SortFilterItem } from "~/lib/constants";
+import type { SortFilterItem } from "~/lib/constants";
 import { FilterItem } from "./item";
 import FilterItemDropDown from "./dropdown";
 

@@ -1,5 +1,5 @@
-import { Link } from "@remix-run/react";
-import { Menu } from "~/lib/shopify/types";
+import { Link } from "react-router";
+import type { Menu } from "~/lib/shopify/types";
 
 export default function Footer({ menu }: { menu: Menu[] }) {
   return (

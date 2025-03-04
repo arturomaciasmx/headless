@@ -1,5 +1,5 @@
-import { Link } from "@remix-run/react";
-import { Product } from "~/lib/shopify/types";
+import { Link } from "react-router";
+import { type Product } from "~/lib/shopify/types";
 import { GridTileImage } from "../grid/tile";
 import Grid from "../grid";
 

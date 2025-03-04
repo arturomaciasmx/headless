@@ -1,6 +1,6 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { CartItem } from "~/lib/shopify/types";
-import { useFetcher } from "@remix-run/react";
+import type { CartItem } from "~/lib/shopify/types";
+import { useFetcher } from "react-router";
 import { useCartContext } from "./cart-context";
 
 export function DeleteItemButton({ item }: { item: CartItem }) {

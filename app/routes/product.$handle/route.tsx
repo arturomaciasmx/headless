@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import { Suspense } from "react";
 import { GridTileImage } from "~/components/grid/tile";
 import ProductDescription from "~/components/product/description";

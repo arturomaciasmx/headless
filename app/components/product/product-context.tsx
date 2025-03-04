@@ -1,4 +1,4 @@
-import { useSearchParams } from "@remix-run/react";
+import { useSearchParams } from "react-router";
 import { createContext, useContext, useMemo, useState } from "react";
 
 type ProductState = {

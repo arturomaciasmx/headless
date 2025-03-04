@@ -1,4 +1,4 @@
-import { Product } from "~/lib/shopify/types";
+import { type Product } from "~/lib/shopify/types";
 import Price from "../price";
 import VariantSelector from "./variant-selector";
 import Prose from "../prose";

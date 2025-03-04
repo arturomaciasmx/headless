@@ -1,9 +1,9 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { Menu } from "~/lib/shopify/types";
+import type { Menu } from "~/lib/shopify/types";
 import Search from "./search";
 
 export default function MobileMenu({ menu }: { menu: Menu[] }) {

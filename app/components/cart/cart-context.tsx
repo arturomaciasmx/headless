@@ -1,5 +1,5 @@
 import { createContext, use, useContext, useMemo, useState } from "react";
-import { Cart, CartItem, Product, ProductVariant } from "~/lib/shopify/types";
+import type { Cart, CartItem, Product, ProductVariant } from "~/lib/shopify/types";
 
 type UpdateType = "plus" | "minus" | "delete";
 

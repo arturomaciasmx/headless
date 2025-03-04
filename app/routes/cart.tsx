@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { redirect, type ActionFunctionArgs } from "react-router";
 import { cartCookie } from "~/lib/cookies.server";
 import {
   addToCart,
@@ -23,7 +23,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const cart = await createCart();
       const headers = new Headers();
       headers.append("Set-Cookie", await cartCookie.serialize(cart.id));
-      return json({ success: true, cartId: cart.id }, { headers });
+      return Response.json({ success: true, cartId: cart.id }, { headers });
     }
     case "addToCart": {
       const selectedVariantId = formData.get("selectedVariantId") as string;
@@ -35,9 +35,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
       try {
         await addToCart(cartId, [{ merchandiseId: selectedVariantId, quantity: 1 }]);
-        return json({ message: "Item added successfully", ok: true });
+        return Response.json({ message: "Item added successfully", ok: true });
       } catch (error) {
-        return json({ message: "Error adding item to cart", ok: false });
+        return Response.json({ message: "Error adding item to cart", ok: false });
       }
     }
     case "removeItem": {
@@ -56,20 +56,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
         if (lineItem && lineItem.id) {
           await removeFromCart(cartId, [lineItem.id]);
-          return json({ message: "Success: Iteme deleted from cart", ok: true });
+          return Response.json({ message: "Success: Iteme deleted from cart", ok: true });
         } else {
-          return json({ message: "Error: Item not found in cart", ok: false });
+          return Response.json({ message: "Error: Item not found in cart", ok: false });
         }
       } catch (error) {
         console.log("🚀 ~ cart.tsx:58 ~ action ~ error:", error);
-        return json({ message: "Error removing item", ok: false });
+        return Response.json({ message: "Error removing item", ok: false });
       }
     }
     case "updateItemQuantity": {
       const cartId = await getCartId(request);
 
       if (!cartId) {
-        return json({ message: "Missing cart ID", ok: false });
+        return Response.json({ message: "Missing cart ID", ok: false });
       }
 
       const merchandiseId = formData.get("merchandiseId") as string;
@@ -78,7 +78,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       try {
         const cart = await getCart(cartId);
         if (!cart) {
-          return json({ message: "Error fetching cart", ok: false });
+          return Response.json({ message: "Error fetching cart", ok: false });
         }
 
         const lineItem = cart?.lines.find(
@@ -94,22 +94,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         } else if (quantity > 0) {
           await addToCart(cartId, [{ merchandiseId, quantity }]);
         }
-        return json({ message: "Success: quantity updated", ok: false });
+        return Response.json({ message: "Success: quantity updated", ok: false });
       } catch (error) {
-        return json({ message: { error }, ok: false });
+        return Response.json({ message: { error }, ok: false });
       }
     }
     case "redirectToCheckout": {
       const cartId = await getCartId(request);
 
       if (!cartId) {
-        return json({ message: "Missing cart id", ok: false });
+        return Response.json({ message: "Missing cart id", ok: false });
       }
 
       const cart = await getCart(cartId);
 
       if (!cart) {
-        return json({ message: "Error fetching cart", ok: false });
+        return Response.json({ message: "Error fetching cart", ok: false });
       }
       console.log(cart.checkoutUrl);
 

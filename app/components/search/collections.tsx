@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Suspense } from "react";
-import { Collection } from "~/lib/shopify/types";
+import { type Collection } from "~/lib/shopify/types";
 import FilterList from "~/components/search/filter";
 
 function CollectionList({ collections }: { collections: Collection[] }) {

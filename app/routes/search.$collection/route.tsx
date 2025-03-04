@@ -1,10 +1,9 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, type LoaderFunctionArgs } from "react-router";
 import Grid from "~/components/grid";
 import { ProductGridItems } from "~/components/layout/product-grid-items";
 import { defaultSort, sorting } from "~/lib/constants";
 import { getCollectionProducts } from "~/lib/shopify";
-import { Product } from "~/lib/shopify/types";
+import type { Product } from "~/lib/shopify/types";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { sort, collection } = params;
